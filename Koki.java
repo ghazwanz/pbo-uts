@@ -6,7 +6,9 @@ public class Koki extends Karyawan {
         this.levelMemasak = levelMemasak;
     }
 
-    public int getLevelMemasak() { return levelMemasak; }
+    public int getLevelMemasak() { 
+        return levelMemasak; 
+    }
 
     /**
      * Polimorfisme: Implementasi spesifik Koki untuk metode bekerja().

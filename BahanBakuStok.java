@@ -11,7 +11,6 @@ public class BahanBakuStok {
     public int getJumlah() { return jumlah; }
     public void setJumlah(int jumlah) { this.jumlah = jumlah; }
 
-    @Override
     public String toString() {
         return nama + ": " + jumlah;
     }
