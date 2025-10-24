@@ -7,7 +7,7 @@ public class RestoranCepatSaji {
     protected String namaRestoran;
     protected double keuangan;
     // Agregasi: Inventori bahan baku (menggunakan ArrayList)
-    protected List<BahanBakuStok> inventoriBahanBaku; 
+    protected List<BahanBakuStok> inventoriBahanBaku;
     protected double reputasi; // Skor 0-100
     // Agregasi: Daftar Karyawan
     protected List<Karyawan> daftarKaryawan;
@@ -26,58 +26,63 @@ public class RestoranCepatSaji {
         this.antrianPesanan = new LinkedList<>(); // Implementasi Queue
         this.riwayatPesanan = new ArrayList<>();
         this.daftarPelanggan = new ArrayList<>();
-        
+
         initInventori();
         initKaryawan();
         initMenu();
     }
-    
+
     public void initInventori() {
-        inventoriBahanBaku.add(new BahanBakuStok("Daging", 50));
-        inventoriBahanBaku.add(new BahanBakuStok("Roti", 100));
-        inventoriBahanBaku.add(new BahanBakuStok("Sayuran", 70));
-        inventoriBahanBaku.add(new BahanBakuStok("Kentang", 60));
-        inventoriBahanBaku.add(new BahanBakuStok("Minuman", 100));
+        inventoriBahanBaku.add(new BahanBakuStok("Daging", 5));
+        inventoriBahanBaku.add(new BahanBakuStok("Roti", 5));
+        inventoriBahanBaku.add(new BahanBakuStok("Sayuran", 5));
+        inventoriBahanBaku.add(new BahanBakuStok("Kentang", 5));
+        inventoriBahanBaku.add(new BahanBakuStok("Minuman", 5));
+        inventoriBahanBaku.add(new BahanBakuStok("Keju", 5));
     }
-    
+
     public void initKaryawan() {
         daftarKaryawan.add(new Koki("Bima", "K001", 3000000, 3));
         daftarKaryawan.add(new Kasir("Santi", "C001", 2500000, 5));
         daftarKaryawan.add(new Koki("Rudi", "K002", 3200000, 4));
         System.out.println("Karyawan telah diinisialisasi (" + daftarKaryawan.size() + " orang).");
     }
-    
+
     public void initMenu() {
         menuRestoran = new ArrayList<>();
         menuRestoran.add(new Makanan("Burger Klasik", 25000, 10, List.of("Daging", "Roti", "Sayuran")));
         menuRestoran.add(new Makanan("Kentang Goreng", 15000, 5, List.of("Kentang")));
         menuRestoran.add(new Makanan("Minuman Soda", 10000, 1, List.of("Minuman")));
-        menuRestoran.add(new Makanan("Burger Keju", 30000, 12, List.of("Daging", "Roti", "Sayuran")));
+        menuRestoran.add(new Makanan("Burger Keju", 30000, 12, List.of("Daging", "Roti", "Sayuran","Keju")));
     }
-    
+
     public List<Makanan> getMenuRestoran() {
         return menuRestoran;
     }
 
-    /** Helper: Mendapatkan objek BahanBakuStok dari inventori berdasarkan nama. */
     public BahanBakuStok getStok(String namaBahan) {
-        return inventoriBahanBaku.stream()
-                .filter(b -> b.getNama().equals(namaBahan))
-                .findFirst()
-                .orElse(null);
+        for (BahanBakuStok b : inventoriBahanBaku) {
+
+            if (b.getNama().equals(namaBahan)) {
+                return b;
+            }
+        }
+
+        return null;
     }
 
     /** Restoran menerima pesanan baru dari Pelanggan, menambahkannya ke Queue. */
     public void terimaPesanan(Pesanan pesanan) {
         antrianPesanan.offer(pesanan); // offer() untuk Queue (Menambahkan di belakang)
         daftarPelanggan.add(pesanan.getPelanggan());
-        System.out.println("Pesanan ID " + pesanan.getId() + " ditambahkan ke antrian. (Ukuran Queue: " + antrianPesanan.size() + ")");
+        System.out.println("Pesanan ID " + pesanan.getId() + " ditambahkan ke antrian. (Ukuran Queue: "
+                + antrianPesanan.size() + ")");
     }
-    
+
     public void lakukanPembayaran(Pesanan pesanan) {
         this.keuangan += pesanan.getTotalHarga();
     }
-    
+
     /** Memeriksa ketersediaan bahan baku (menggunakan ArrayList stok). */
     public boolean cekStok(List<String> bahan) {
         for (String b : bahan) {
@@ -88,7 +93,7 @@ public class RestoranCepatSaji {
         }
         return true;
     }
-    
+
     /** Mengurangi stok (menggunakan ArrayList stok). */
     public void kurangiStok(List<String> bahan) {
         for (String b : bahan) {
@@ -99,7 +104,10 @@ public class RestoranCepatSaji {
         }
     }
 
-    /** Menambah stok bahan baku (menggunakan ArrayList stok dan memengaruhi keuangan). */
+    /**
+     * Menambah stok bahan baku (menggunakan ArrayList stok dan memengaruhi
+     * keuangan).
+     */
     public void tambahStok(String bahan, int jumlah, double biayaPerUnit) {
         BahanBakuStok stokItem = getStok(bahan);
         if (stokItem != null) {
@@ -107,34 +115,47 @@ public class RestoranCepatSaji {
         } else {
             inventoriBahanBaku.add(new BahanBakuStok(bahan, jumlah));
         }
-        
+
         this.keuangan -= (jumlah * biayaPerUnit);
-        System.out.printf("Stok %s ditambahkan sebanyak %d. Biaya: Rp%.2f. Saldo baru: Rp%.2f\n", 
-                          bahan, jumlah, (jumlah * biayaPerUnit), this.keuangan);
+        System.out.printf("Stok %s ditambahkan sebanyak %d. Biaya: Rp%.2f. Saldo baru: Rp%.2f\n",
+                bahan, jumlah, (jumlah * biayaPerUnit), this.keuangan);
     }
 
     public void hitungKepuasanPelanggan(int skorReview) {
-        double perubahan = (skorReview - 3) * 2.0; 
+        double perubahan = (skorReview - 3) * 2.0;
         this.reputasi = Math.max(0, Math.min(100, this.reputasi + perubahan));
         System.out.printf("Reputasi restoran berubah %.2f. Reputasi saat ini: %.2f/100.\n", perubahan, this.reputasi);
     }
-    
+
     /** Menyajikan pesanan yang sudah selesai dimasak. */
     public void sajikanPesanan(Pesanan pesanan) {
         pesanan.setWaktuSelesai(System.currentTimeMillis());
         // Penghapusan dari antrian dilakukan di main loop menggunakan poll()
         riwayatPesanan.add(pesanan);
-        
-        System.out.println("\n🎉 Pesanan ID " + pesanan.getId() + " disajikan kepada " + pesanan.getPelanggan().getNama() + "!");
+
+        System.out.println(
+                "\n🎉 Pesanan ID " + pesanan.getId() + " disajikan kepada " + pesanan.getPelanggan().getNama() + "!");
         int review = pesanan.getPelanggan().tinggalkanReview(pesanan);
         hitungKepuasanPelanggan(review);
     }
 
     /** Menampilkan laporan keuangan dan operasional akhir. */
     public void laporanKeuangan() {
-        long totalPelangganTerlayani = riwayatPesanan.stream().filter(p -> !p.isDibatalkan()).count();
-        double totalPendapatan = riwayatPesanan.stream().filter(p -> !p.isDibatalkan()).mapToDouble(Pesanan::getTotalHarga).sum();
-        
+        long totalPelangganTerlayani = 0;
+
+        for (Pesanan p : riwayatPesanan) {
+            if (!p.isDibatalkan()) {
+                totalPelangganTerlayani++;
+            }
+        }
+
+        double totalPendapatan = 0.0;
+        for (Pesanan p : riwayatPesanan) {
+            if (!p.isDibatalkan()) {
+                totalPendapatan = totalPendapatan + p.getTotalHarga();
+            }
+        }
+
         System.out.println("\n=======================================================");
         System.out.println("            LAPORAN AKHIR SIMULASI " + namaRestoran.toUpperCase());
         System.out.println("=======================================================");
@@ -145,8 +166,12 @@ public class RestoranCepatSaji {
         System.out.printf("Skor Reputasi Akhir               : %.2f/100\n", this.reputasi);
         System.out.println("Stok Bahan Baku Tersisa           : " + inventoriBahanBaku);
         System.out.println("Gaji Total Karyawan (Tahun/Bulan) :");
-        
-        double totalGaji = daftarKaryawan.stream().mapToDouble(Karyawan::hitungGaji).sum();
+
+        double totalGaji = 0.0;
+
+        for (Karyawan k : daftarKaryawan) {
+            totalGaji = totalGaji + k.hitungGaji();
+        }
         System.out.printf("- Total Gaji Karyawan             : Rp%.2f (per bulan)\n", totalGaji);
         System.out.println("=======================================================");
     }
