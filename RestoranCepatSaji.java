@@ -49,8 +49,11 @@ public class RestoranCepatSaji {
     }
 
     public void initMenu() {
+        //penggunaan OVERLOAD
         menuRestoran = new ArrayList<>();
-        menuRestoran.add(new Makanan("Burger Klasik", 25000, 10, List.of("Daging", "Roti", "Sayuran")));
+        // Konstruktor default (3 parameter)
+        menuRestoran.add(new Makanan("Burger Klasik", 25000, 10));
+        // Konstruktor Lengkap (4 parameter)
         menuRestoran.add(new Makanan("Kentang Goreng", 15000, 5, List.of("Kentang")));
         menuRestoran.add(new Makanan("Minuman Soda", 10000, 1, List.of("Minuman")));
         menuRestoran.add(new Makanan("Burger Keju", 30000, 12, List.of("Daging", "Roti", "Sayuran","Keju")));
