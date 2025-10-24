@@ -1,3 +1,5 @@
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -105,11 +107,20 @@ public class MainRestoran {
         System.out.println("╚════════════════════════════════════════════════════╝");
     }
 
+    private static void tampilPesanan() {
+        System.out.println("═══════════════════════════════════════════════════════");
+        System.out.println("                 TAMPILKAN PESANAN");
+        System.out.println("═══════════════════════════════════════════════════════");
+
+    }
+
     private static void tambahPelangganDanPesanan() {
         System.out.println("═══════════════════════════════════════════════════════");
         System.out.println("         TAMBAH PELANGGAN DAN PESANAN");
         System.out.println("═══════════════════════════════════════════════════════");
-
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        System.out.print("Waktu Pesan: ");
+        System.out.println(LocalDateTime.now().format(format));
         System.out.print("Masukkan nama pelanggan: ");
         String namaPelanggan = scanner.nextLine();
 
@@ -188,6 +199,9 @@ public class MainRestoran {
             System.out.println("\n--- MEMPROSES PESANAN ID: " + pesananDiproses.getId() +
                     " (Queue Sisa: " + restoran.antrianPesanan.size() + ") ---");
 
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            System.out.print("Waktu Proses Memasak Pesanan: ");
+            System.out.println(LocalDateTime.now().format(format));
             // Kasir memproses pembayaran
             kasirUtama.bekerja(pesananDiproses, restoran);
 
@@ -196,8 +210,9 @@ public class MainRestoran {
 
             // Penyelesaian
             boolean semuaMakananSiap = true;
-
             for (Makanan m : pesananDiproses.getListMakanan()) {
+                System.out.print("Menu Selesai: ");
+                System.out.println(LocalDateTime.now().format(format));
                 if (m.getStatusMakanan() != StatusMakanan.SIAP_SAJI) {
                     semuaMakananSiap = false;
                     break;
